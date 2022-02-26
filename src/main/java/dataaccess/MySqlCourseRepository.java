@@ -229,7 +229,39 @@ public class MySqlCourseRepository implements MyCourseRepository {
 
     @Override
     public List<Course> findAllCoursesByNameOrDescription(String searchText) {
-        return null;
+
+        try {
+
+            String sql = "Select *  from `courses`  where Lower(`description`) Like Lower(?) Or Lower (`name`) like Lower (?)";
+            PreparedStatement preparedStatement = con.prepareStatement(sql);
+            preparedStatement.setString(1, "%"+searchText+"%");
+            preparedStatement.setString(2, "%"+searchText+"%");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            ArrayList<Course> courseList = new ArrayList<>();
+            while (resultSet.next())
+            {
+
+                courseList.add(new Course(
+                        resultSet.getLong("id"),
+                        resultSet.getString("name"),
+                        resultSet.getString("description"),
+                        resultSet.getInt("hours"),
+                        resultSet.getDate("begindate"),
+                        resultSet.getDate("enddate"),
+                        CourseType.valueOf(resultSet.getString("coursetype")
+                        )));
+
+            }
+            return courseList;
+
+
+
+        }catch (SQLException sqlException)
+        {
+            throw new DatabaseException(sqlException.getMessage());
+
+        }
+
     }
 
     @Override
