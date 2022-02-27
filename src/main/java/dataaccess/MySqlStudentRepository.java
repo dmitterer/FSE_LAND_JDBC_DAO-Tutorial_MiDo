@@ -4,7 +4,10 @@ import domain.Course;
 import domain.Student;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,7 +44,27 @@ public class MySqlStudentRepository implements MyStudentRepository {
 
     @Override
     public List<Student> getAll() {
-        return null;
+
+        String sql = "Select * from `students`";
+
+        try {
+            PreparedStatement preparedStatement = con.prepareStatement(sql);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            ArrayList<Student> studentList = new ArrayList<>();
+            while (resultSet.next())
+            {
+                    studentList.add(new Student(
+                            resultSet.getLong("id"),
+                            resultSet.getString("studentVorname"),
+                            resultSet.getString("studentNachname"),
+                            resultSet.getDate("studentGb")
+                    ));
+
+            }return studentList;
+        }catch (SQLException e){
+
+            throw new DatabaseException("Database error occured!");
+        }
     }
 
     @Override

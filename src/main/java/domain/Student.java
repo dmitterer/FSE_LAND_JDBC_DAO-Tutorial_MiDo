@@ -65,10 +65,10 @@ public class Student extends BaseEntity {
     @Override
     public String toString() {
         return "Student{" +
-                "id" + this.getId() +
-                "studentVorname='" + studentVorname + '\'' +
-                ", studentNachname='" + studentNachname + '\'' +
-                ", studentGb=" + studentGb +
+                "id: " + this.getId() +
+                ", studentVorname= '" + studentVorname + '\'' +
+                ", studentNachname= '" + studentNachname + '\'' +
+                ", studentGb= " + studentGb +
                 '}';
     }
 }

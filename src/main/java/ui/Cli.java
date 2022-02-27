@@ -3,9 +3,11 @@ package ui;
 import dataaccess.DatabaseException;
 import dataaccess.MyCourseRepository;
 import dataaccess.MySqlCourseRepository;
+import dataaccess.MySqlStudentRepository;
 import domain.Course;
 import domain.CourseType;
 import domain.InvalidValueException;
+import domain.Student;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -17,10 +19,13 @@ public class Cli {
 
     Scanner scan;
     MySqlCourseRepository repo;
+    MySqlStudentRepository repoStudent;
 
-    public Cli(MySqlCourseRepository repo) {
+    public Cli(MySqlCourseRepository repo, MySqlStudentRepository repoStudent) {
         this.scan = new Scanner(System.in);
         this.repo = repo;
+        this.repoStudent = repoStudent;
+
     }
 
     public void start() {
@@ -55,6 +60,9 @@ public class Cli {
                 case "7":
                     runningCourses();
                     break;
+                case "8":
+                    showAllStudents();
+                    break;
                 case "x":
                     System.out.println("Auf Wiedersehen!");
                     break;
@@ -66,6 +74,35 @@ public class Cli {
         scan.close();
 
     }
+
+    private void showAllStudents() {
+        List<Student> list = null;
+
+
+        try {
+
+
+            list = repoStudent.getAll();
+
+            if (list.size() > 0) {
+                for (Student student : list) {
+                    System.out.println(student);
+
+                }
+            } else {
+                System.out.println("Studentenliste Leer!");
+            }
+        } catch (DatabaseException databaseException) {
+
+            System.out.println("Datenbankfehler bei Anzeige aller Studenten " + databaseException.getMessage());
+
+        } catch (Exception exception) {
+
+            System.out.println("Unbekannter Fehler bei Anzeige aller Studenten: " + exception.getMessage());
+
+        }
+    }
+
 
     private void runningCourses() {
 
@@ -302,7 +339,7 @@ public class Cli {
         System.out.println("---------------- Kursmanagement -----------------");
         System.out.println("(1) Kurs eingeben \t (2) Alle Kurse anzeigen \t " + "(3) Kursdetails anzeigen");
         System.out.println("(4) Kursdetails ändern \t (5) Kurslöschen \t (6) Kurssuche\t (7) Laufende Kurse");
-        System.out.println("(-) xxxx \t (-) xxxx \t (-) xxx\t");
+        System.out.println("(8) Alle Studenten anzeigen \t (-) xxxx \t (-) xxx\t");
         System.out.println("(x) Ende");
 
 
