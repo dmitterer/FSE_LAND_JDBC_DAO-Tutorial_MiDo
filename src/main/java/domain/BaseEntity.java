@@ -28,7 +28,7 @@ public abstract class  BaseEntity {
         {
             this.id = id;
 
-        }else throw new InvalidValueException("Kurs-ID mus größer gleich 0 sein");
+        }else throw new InvalidValueException("Die ID muss größer gleich 0 sein");
 
     }
 
