@@ -63,6 +63,9 @@ public class Cli {
                 case "8":
                     showAllStudents();
                     break;
+                case "9":
+                    addStudent();
+                    break;
                 case "x":
                     System.out.println("Auf Wiedersehen!");
                     break;
@@ -73,6 +76,45 @@ public class Cli {
         }
         scan.close();
 
+    }
+
+    private void addStudent() {
+        String studentVorname, studentNachname;
+        Date bday;
+
+
+        try {
+            System.out.println("Bitte alle Studentendaten angeben:");
+            System.out.println("Student Vorname: ");
+            studentVorname = scan.nextLine();
+            if (studentVorname.equals("")) throw new IllegalArgumentException("Eingabe darf nicht leer sein!");
+            System.out.println("Student Nachname: ");
+            studentNachname = scan.nextLine();
+            if (studentNachname.equals("")) throw new IllegalArgumentException("Eingabe darf nicht leer sein!");
+            System.out.println("Geburstdatum eingeben (YYYY-MM-DD): ");
+            bday = Date.valueOf(scan.nextLine());
+
+
+            Optional<Student> optionalStudent = repoStudent.insert(
+                    new Student(studentVorname, studentNachname, bday)
+            );
+
+            if (optionalStudent.isPresent()) {
+                System.out.println("Student angelegt: " + optionalStudent.get());
+
+            } else {
+                System.out.println("Student konnte nicht angelegt werden!");
+            }
+
+        } catch (IllegalArgumentException illegalArgumentException) {
+            System.out.println("Eingabefehler: " + illegalArgumentException.getMessage());
+        } catch (InvalidValueException invalidValueException) {
+            System.out.println("Student wurde nicht korrekt angegeben: " + invalidValueException.getMessage());
+        } catch (DatabaseException databaseException) {
+            System.out.println("Datenbankfehler beim Einfügen: " + databaseException.getMessage());
+        } catch (Exception exception) {
+            System.out.println("Unbekannter Fehler beim Einfügen: " + exception.getMessage());
+        }
     }
 
     private void showAllStudents() {
@@ -339,7 +381,7 @@ public class Cli {
         System.out.println("---------------- Kursmanagement -----------------");
         System.out.println("(1) Kurs eingeben \t (2) Alle Kurse anzeigen \t " + "(3) Kursdetails anzeigen");
         System.out.println("(4) Kursdetails ändern \t (5) Kurslöschen \t (6) Kurssuche\t (7) Laufende Kurse");
-        System.out.println("(8) Alle Studenten anzeigen \t (-) xxxx \t (-) xxx\t");
+        System.out.println("(8) Alle Studenten anzeigen \t (9) Student anlegen \t (-) xxx\t");
         System.out.println("(x) Ende");
 
 

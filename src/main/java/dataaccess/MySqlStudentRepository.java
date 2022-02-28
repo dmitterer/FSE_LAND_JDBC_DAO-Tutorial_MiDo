@@ -2,11 +2,9 @@ package dataaccess;
 
 import domain.Course;
 import domain.Student;
+import util.Assert;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -34,7 +32,43 @@ public class MySqlStudentRepository implements MyStudentRepository {
 
     @Override
     public Optional<Student> insert(Student entity) {
-        return Optional.empty();
+
+        Assert.notNull(entity);
+
+        try
+        {
+
+            String sql = "Insert into `students`  (`studentVorname`, `studentNachname`, `studentGb`) VALUES (?,?,?)";
+            PreparedStatement preparedStatement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setString(1, entity.getStudentVorname());
+            preparedStatement.setString(2, entity.getStudentNachname());
+            preparedStatement.setDate(3, entity.getStudentGb());
+
+            int affectedRows = preparedStatement.executeUpdate();
+
+            if (affectedRows == 0)
+            {
+                return Optional.empty();
+
+            } else
+            {
+                ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+
+                if (generatedKeys.next())
+                {
+                    return this.getById(generatedKeys.getLong(1));
+
+                }else
+                {
+                    return Optional.empty();
+
+                }
+            }
+
+        } catch (SQLException sqlException)
+        {
+            throw new DatabaseException(sqlException.getMessage());
+        }
     }
 
     @Override
