@@ -66,6 +66,9 @@ public class Cli {
                 case "9":
                     addStudent();
                     break;
+                case "10":
+                    updateStudentDetails();
+                    break;
                 case "x":
                     System.out.println("Auf Wiedersehen!");
                     break;
@@ -76,6 +79,58 @@ public class Cli {
         }
         scan.close();
 
+    }
+    private void updateStudentDetails() {
+
+        System.out.println("Für welche Studenten-Id möchten Sie die Studenten ändern?");
+        Long studentId = Long.parseLong(scan.nextLine());
+
+        try {
+            Optional<Student> optionalStudent = repoStudent.getById(studentId);
+            if (optionalStudent.isEmpty()) {
+                System.out.println("Student mit der gegebenen Id[" + studentId + "] nicht in der Datenbank!");
+            } else {
+                Student student = optionalStudent.get();
+
+                System.out.println("Änderungen für folgenden Studenten: ");
+                System.out.println(student);
+
+                String studentVorname, studentNachname, studentGb;
+
+                System.out.println("Bitte neue Studenten-daten angeben (Enter, falls keine Änderung gewüscht ist): ");
+                System.out.println("Student Vorname: ");
+                studentVorname = scan.nextLine();
+                System.out.println("Student Nachname: ");
+                studentNachname = scan.nextLine();
+                System.out.println("Student Nachname: ");
+                studentGb = scan.nextLine();
+
+                Optional<Student> optionalStudentUpdated = repoStudent.update(
+
+                        new Student(
+                                student.getId(),
+                                studentVorname.equals("") ? student.getStudentVorname() : studentVorname,
+                                studentNachname.equals("") ? student.getStudentNachname() : studentNachname,
+                                studentGb.equals("") ? student.getStudentGb() : Date.valueOf(studentGb)
+                        )
+                );
+
+                optionalStudentUpdated.ifPresentOrElse(
+
+                        (c) -> System.out.println("Student aktualisiert: " + c),
+                        () -> System.out.println("Student konnte nicht aktualisiert werden!")
+                );
+            }
+
+        } catch (IllegalArgumentException illegalArgumentException) {
+            System.out.println("Eingabefehler: " + illegalArgumentException.getMessage());
+        } catch (InvalidValueException invalidValueException) {
+            System.out.println("Student nicht korrekt angegeben: " + invalidValueException.getMessage());
+        } catch (DatabaseException databaseException) {
+            System.out.println("Datenbankfehler beim Einfügen: " + databaseException.getMessage());
+        } catch (Exception exception) {
+            System.out.println("Unbekannter Fehler beim Einfügen: " + exception.getMessage());
+        }
     }
 
     private void addStudent() {
@@ -378,10 +433,10 @@ public class Cli {
     }
 
     private void showMenue() {
-        System.out.println("---------------- Kursmanagement -----------------");
+        System.out.println("---------------- Kurs- und Studentmanagement -----------------");
         System.out.println("(1) Kurs eingeben \t (2) Alle Kurse anzeigen \t " + "(3) Kursdetails anzeigen");
         System.out.println("(4) Kursdetails ändern \t (5) Kurslöschen \t (6) Kurssuche\t (7) Laufende Kurse");
-        System.out.println("(8) Alle Studenten anzeigen \t (9) Student anlegen \t (-) xxx\t");
+        System.out.println("(8) Alle Studenten anzeigen \t (9) Student anlegen \t (10) Studentdetails ändern\t");
         System.out.println("(x) Ende");
 
 
