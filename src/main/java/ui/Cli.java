@@ -75,6 +75,9 @@ public class Cli {
                 case "12":
                     studentSearch();
                     break;
+                case "13":
+                    findStudentByGb();
+                    break;
                 case "x":
                     System.out.println("Auf Wiedersehen!");
                     break;
@@ -86,6 +89,32 @@ public class Cli {
         scan.close();
 
     }
+
+    private void findStudentByGb() {
+        List<Student> studentList;
+        try {
+            System.out.println("Geben Sie das gesuchte Geburtsdatum ein (YYYY-MM-DD): ");
+            String studentGb = scan.nextLine();
+            studentList = repoStudent.findAllStudentsByGb(Date.valueOf(studentGb));
+            if(studentList.size() > 0){
+                for (Student student: studentList) {
+                    System.out.println(student);
+                }
+            }else{
+                System.out.println("Keine Studenten vorhanden");
+            }
+        }catch (IllegalArgumentException illegalArgumentException){
+            System.out.println("Eingabefehler: " + illegalArgumentException.getMessage());
+        }catch (InvalidValueException invalidValueException){
+            System.out.println("Student nicht korrekt angegeben: " + invalidValueException.getMessage());
+        }catch (DatabaseException databaseException){
+            System.out.println("Datenbankfehler beim Einfügen: " + databaseException.getMessage());
+        }catch (Exception exception){
+            System.out.println("Unbekannter Fehler beim Einfügen: " + exception.getMessage());
+        }
+    }
+
+
 
     private void studentSearch() {
 
@@ -485,7 +514,7 @@ public class Cli {
         System.out.println("(1) Kurs eingeben \t (2) Alle Kurse anzeigen \t " + "(3) Kursdetails anzeigen");
         System.out.println("(4) Kursdetails ändern \t (5) Kurslöschen \t (6) Kurssuche\t (7) Laufende Kurse");
         System.out.println("(8) Alle Studenten anzeigen \t (9) Student anlegen \t (10) Studentdetails ändern\t");
-        System.out.println("(11) Student löschen \t (12) Studentensuche \t (-) xxxx\t");
+        System.out.println("(11) Student löschen \t (12) Studentensuche \t (13) Studentensuche nach Gb\t");
         System.out.println("(x) Ende");
 
 

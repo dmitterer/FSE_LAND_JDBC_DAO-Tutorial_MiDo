@@ -11,4 +11,5 @@ public interface MyStudentRepository extends BaseRepository<Student, Long>
     List<Student> findAllStudentsByNachname(String studentNachname);
     List<Student> findAllStudentsByGbJahr(String searchGbJahr);
     List<Student> findAllStudentByVornameOrNachname(String searchText);
+    List<Student>findAllStudentsByGb(Date studentGb);
 }
