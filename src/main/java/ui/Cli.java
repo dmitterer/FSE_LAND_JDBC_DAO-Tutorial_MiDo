@@ -77,6 +77,8 @@ public class Cli {
                     break;
                 case "13":
                     findStudentByGb();
+                case "14":
+                    findStudentBetweenById();
                     break;
                 case "x":
                     System.out.println("Auf Wiedersehen!");
@@ -89,6 +91,34 @@ public class Cli {
         scan.close();
 
     }
+
+    private void findStudentBetweenById() {
+        List<Student> studentList;
+        try {
+            System.out.println("Geben Sie die Start-ID der gesuchten Studenten ein: ");
+            Long idstart = Long.valueOf(scan.nextLine());
+            System.out.println("Geben Sie die End-ID der gesuchten Studenten ein: ");
+            Long idend = Long.valueOf(scan.nextLine());
+            studentList = repoStudent.findStudentBetweenById(idstart, idend);
+            if(studentList.size() > 0 ){
+                for (Student student: studentList) {
+                    System.out.println(student);
+                }
+            }else{
+                System.out.println("Die Studentenliste ist leer");
+            }
+
+        } catch (IllegalArgumentException illegalArgumentException) {
+            System.out.println("Eingabefehler: " + illegalArgumentException.getMessage());
+        } catch (InvalidValueException invalidValueException) {
+            System.out.println("Student nicht korrekt angegeben: " + invalidValueException.getMessage());
+        } catch (DatabaseException databaseException) {
+            System.out.println("Datenbankfehler beim Einfügen: " + databaseException.getMessage());
+        } catch (Exception exception) {
+            System.out.println("Unbekannter Fehler beim Einfügen: " + exception.getMessage());
+        }
+    }
+
 
     private void findStudentByGb() {
         List<Student> studentList;
@@ -515,6 +545,7 @@ public class Cli {
         System.out.println("(4) Kursdetails ändern \t (5) Kurslöschen \t (6) Kurssuche\t (7) Laufende Kurse");
         System.out.println("(8) Alle Studenten anzeigen \t (9) Student anlegen \t (10) Studentdetails ändern\t");
         System.out.println("(11) Student löschen \t (12) Studentensuche \t (13) Studentensuche nach Gb\t");
+        System.out.println("(14) Student mit ID von... bis... ausggeben \t ");
         System.out.println("(x) Ende");
 
 

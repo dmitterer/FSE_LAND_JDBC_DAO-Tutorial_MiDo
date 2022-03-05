@@ -31,12 +31,40 @@ public class MySqlStudentRepository implements MyStudentRepository {
         return null;
     }
 
+
+
+
     public List<Student> findAllStudentsByGb(Date studentGb) {
         Assert.notNull(studentGb);
         try {
             String sql = "SELECT * FROM `students` WHERE `studentGb` LIKE ?";
             PreparedStatement preparedStatement = con.prepareStatement(sql);
             preparedStatement.setDate(1, studentGb);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            ArrayList<Student> studentArrayList = new ArrayList<>();
+            while (resultSet.next()){
+                studentArrayList.add(new Student(
+                        resultSet.getLong(1),
+                        resultSet.getString(2),
+                        resultSet.getString(3),
+                        resultSet.getDate(4)
+                ));
+            }
+            return studentArrayList;
+        }catch (SQLException sqlException){
+            throw new DatabaseException(sqlException.getMessage());
+        }
+    }
+
+    @Override
+    public List<Student> findStudentBetweenById(Long idstart, Long idend) {
+        Assert.notNull(idstart);
+        Assert.notNull(idend);
+        try {
+            String sql = "SELECT * FROM `students` WHERE `id` BETWEEN ? AND ?";
+            PreparedStatement preparedStatement = con.prepareStatement(sql);
+            preparedStatement.setLong(1,idstart);
+            preparedStatement.setLong(2, idend);
             ResultSet resultSet = preparedStatement.executeQuery();
             ArrayList<Student> studentArrayList = new ArrayList<>();
             while (resultSet.next()){
