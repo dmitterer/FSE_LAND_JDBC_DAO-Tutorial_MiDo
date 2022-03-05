@@ -72,6 +72,9 @@ public class Cli {
                 case "11":
                     deleteStudent();
                     break;
+                case "12":
+                    studentSearch();
+                    break;
                 case "x":
                     System.out.println("Auf Wiedersehen!");
                     break;
@@ -81,6 +84,32 @@ public class Cli {
             }
         }
         scan.close();
+
+    }
+
+    private void studentSearch() {
+
+        System.out.println("Geben Sie einen Suchbegriff an! ");
+        String searchString = scan.nextLine();
+        List<Student> studentList;
+
+        try {
+
+            studentList = repoStudent.findAllStudentByVornameOrNachname(searchString);
+            for (Student student : studentList)
+            {
+                System.out.println(student);
+            }
+
+        }catch (DatabaseException databaseException)
+        {
+            System.out.println("Datenbankfehler bei der Studentensuche: " + databaseException.getMessage());
+        }catch (Exception exception)
+        {
+            System.out.println("Unbekannterfehler bei der Studentensuche: " + exception.getMessage());
+        }
+
+
 
     }
 
@@ -456,7 +485,7 @@ public class Cli {
         System.out.println("(1) Kurs eingeben \t (2) Alle Kurse anzeigen \t " + "(3) Kursdetails anzeigen");
         System.out.println("(4) Kursdetails ändern \t (5) Kurslöschen \t (6) Kurssuche\t (7) Laufende Kurse");
         System.out.println("(8) Alle Studenten anzeigen \t (9) Student anlegen \t (10) Studentdetails ändern\t");
-        System.out.println("(11) Student löschen \t (-) xxxx \t (-) xxxx\t");
+        System.out.println("(11) Student löschen \t (12) Studentensuche \t (-) xxxx\t");
         System.out.println("(x) Ende");
 
 

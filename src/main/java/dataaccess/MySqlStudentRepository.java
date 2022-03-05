@@ -30,6 +30,28 @@ public class MySqlStudentRepository implements MyStudentRepository {
         return null;
     }
 
+    @Override
+    public List<Student> findAllStudentByVornameOrNachname(String searchText) {
+        try {
+            String sql = "SELECT * FROM `students` WHERE LOWER(`studentVorname`) LIKE LOWER(?) OR LOWER(`studentNachname`) LIKE LOWER(?)";
+            PreparedStatement prepareStatement = con.prepareStatement(sql);
+            prepareStatement.setString(1, "%" + searchText + "%");
+            prepareStatement.setString(2, "%" + searchText + "%");
+            ResultSet resultSet = prepareStatement.executeQuery();
+            ArrayList<Student> studentList = new ArrayList<>();
+            while (resultSet.next()) {
+                studentList.add(new Student(
+                        resultSet.getLong("id"),
+                        resultSet.getString("studentVorname"),
+                        resultSet.getString("studentNachname"),
+                        resultSet.getDate("studentGb")));
+            }
+            return studentList;
+        } catch (SQLException sqlException) {
+            throw new DatabaseException(sqlException.getMessage());
+        }
+    }
+
 
     @Override
     public Optional<Student> insert(Student entity) {
